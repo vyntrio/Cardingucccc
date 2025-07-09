@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enter UID</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { background: #000; color: #fff; font-family: sans-serif; padding: 20px; }
+    input, button {
+      width: 100%; padding: 15px; margin: 10px 0;
+      border-radius: 8px; border: 1px solid #555; background: #111; color: white;
+    }
+    button { background: #28a745; border: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Enter Your Game UID</h2>
+  <input type="number" id="uid" placeholder="Enter UID (9-11 digits)" />
+  <button onclick="submitUID()">Submit Now</button>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuq7TxOMSH7eBBoqlwBsrpbI55gmBUA_0",
+      authDomain: "bgmipaythh.firebaseapp.com",
+      projectId: "bgmipaythh",
+      storageBucket: "bgmipaythh.firebasestorage.app",
+      messagingSenderId: "494328020622",
+      appId: "1:494328020622:web:9ffbb1dfcc8e70dd5ed3df"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    function submitUID() {
+      const uid = document.getElementById('uid').value;
+      const product = localStorage.getItem("selectedProduct");
+      if (uid.length >= 9 && uid.length <= 11) {
+        localStorage.setItem("game_uid", uid);
+        db.ref("orders/temp").set({ product, uid });
+        location.href = 'payment.html';
+      } else {
+        alert("Invalid UID");
+      }
+    }
+  </script>
+</body>
+</html>

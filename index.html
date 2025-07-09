@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UC Store</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { margin: 0; background: #000; color: #fff; font-family: sans-serif; }
+    .logo { width: 100%; max-width: 200px; margin: 20px auto; display: block; }
+    .product { background: #111; margin: 12px; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+    .product img { width: 100%; border-radius: 8px; }
+    .title { font-size: 18px; font-weight: bold; margin: 10px 0 5px; }
+    .price { color: #0f0; font-weight: bold; margin-bottom: 10px; }
+    .btn { padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 8px; width: 100%; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <img src="https://i.postimg.cc/C1CFNjrX/image-search-1751878253664.jpg" class="logo" />
+  <div id="productList"></div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuq7TxOMSH7eBBoqlwBsrpbI55gmBUA_0",
+      authDomain: "bgmipaythh.firebaseapp.com",
+      projectId: "bgmipaythh",
+      storageBucket: "bgmipaythh.firebasestorage.app",
+      messagingSenderId: "494328020622",
+      appId: "1:494328020622:web:9ffbb1dfcc8e70dd5ed3df"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const productList = document.getElementById("productList");
+    db.ref("products").once("value").then(snapshot => {
+      snapshot.forEach(child => {
+        const data = child.val();
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <div class="title">${data.title}</div>
+          <img src="${data.img}" />
+          <div class="price">₹${data.price}</div>
+          <button class="btn" onclick="buyNow('${child.key}')">Buy Now</button>
+        `;
+        productList.appendChild(div);
+      });
+    });
+    function buyNow(productId) {
+      localStorage.setItem("selectedProduct", productId);
+      location.href = "uid.html";
+    }
+  </script>
+</body>
+</html>

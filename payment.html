@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      background: #000; color: white; font-family: sans-serif;
+      text-align: center; padding: 20px;
+    }
+    input, button {
+      width: 100%; padding: 15px; margin-top: 20px;
+      border-radius: 10px; border: 1px solid #555;
+      background: #111; color: white;
+    }
+    button {
+      background: green; font-weight: bold; border: none;
+    }
+    img {
+      width: 80%; max-width: 300px; border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Scan to Pay</h2>
+  <img id="qrImg" src="https://via.placeholder.com/300x300.png?text=QR" />
+  <input id="utr" placeholder="Enter UTR Number" />
+  <button onclick="submitUTR()">Submit UTR</button>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuq7TxOMSH7eBBoqlwBsrpbI55gmBUA_0",
+      authDomain: "bgmipaythh.firebaseapp.com",
+      projectId: "bgmipaythh",
+      storageBucket: "bgmipaythh.firebasestorage.app",
+      messagingSenderId: "494328020622",
+      appId: "1:494328020622:web:9ffbb1dfcc8e70dd5ed3df"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Load QR image from Firebase
+    db.ref("qr").once("value").then(snapshot => {
+      const qr = snapshot.val();
+      if (qr) {
+        document.getElementById("qrImg").src = qr;
+      }
+    });
+
+    function submitUTR() {
+      const utr = document.getElementById("utr").value;
+      const uid = localStorage.getItem("game_uid");
+      if (utr.length >= 6) {
+        db.ref("orders/utr_" + Date.now()).set({
+          uid,
+          utr,
+          time: new Date().toLocaleString()
+        });
+        location.href = "confirm.html";
+      } else {
+        alert("Invalid UTR Number");
+      }
+    }
+  </script>
+</body>
+</html>
