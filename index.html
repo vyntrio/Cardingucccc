@@ -1,24 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>UC Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
-    body { margin: 0; background: #000; color: #fff; font-family: sans-serif; }
-    .logo { width: 100%; max-width: 200px; margin: 20px auto; display: block; }
-    .product { background: #111; margin: 12px; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(255,255,255,0.1); }
-    .product img { width: 100%; border-radius: 8px; }
-    .title { font-size: 18px; font-weight: bold; margin: 10px 0 5px; }
-    .price { color: #0f0; font-weight: bold; margin-bottom: 10px; }
-    .btn { padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 8px; width: 100%; cursor: pointer; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 10px;
+    }
+    .logo {
+      width: 180px;
+      margin: 20px auto;
+      border-radius: 12px;
+    }
+    .product {
+      background: #111;
+      border: 1px solid #444;
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .product img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+    }
+    .title {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .price {
+      font-size: 16px;
+      color: #00ff90;
+      margin: 10px 0;
+    }
+    .btn {
+      padding: 10px 20px;
+      background: #00aa55;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- LOGO -->
   <img src="https://i.postimg.cc/C1CFNjrX/image-search-1751878253664.jpg" class="logo" />
+
+  <h2>Our UC & Diamond Offers</h2>
   <div id="productList"></div>
+
   <script>
+    // ✅ Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBuq7TxOMSH7eBBoqlwBsrpbI55gmBUA_0",
       authDomain: "bgmipaythh.firebaseapp.com",
@@ -29,24 +70,32 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+
+    // ✅ Load Products
     const productList = document.getElementById("productList");
     db.ref("products").once("value").then(snapshot => {
+      if (!snapshot.exists()) {
+        productList.innerHTML = "<p>No products available.</p>";
+        return;
+      }
+
       snapshot.forEach(child => {
         const data = child.val();
         const div = document.createElement("div");
         div.className = "product";
         div.innerHTML = `
-          <div class="title">${data.title}</div>
           <img src="${data.img}" />
+          <div class="title">${data.title}</div>
           <div class="price">₹${data.price}</div>
           <button class="btn" onclick="buyNow('${child.key}')">Buy Now</button>
         `;
         productList.appendChild(div);
       });
     });
-    function buyNow(productId) {
-      localStorage.setItem("selectedProduct", productId);
-      location.href = "uid.html";
+
+    function buyNow(id) {
+      localStorage.setItem("product_id", id);
+      window.location.href = "uid.html";
     }
   </script>
 </body>
